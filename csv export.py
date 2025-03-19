@@ -1,10 +1,18 @@
 import bpy
-import numpy
+import numpy #numpy.float64()
 
-odecetX=782700.0
-odecetY=1197500.0
-odecetZ=720.0
-
+#coords to substract are float - change to 64 bit only on some automatic coord alignment
+diffX=782700.0
+diffY=1197500.0
+diffZ=720.0
+decPlaces = 3
+delimiter = ","
+filePath = "body1.csv"
+naming = "index"
+format = "XYZ"
+#format = "YXZ"
+#format = "-XYZ"
+#format = "-YXZ"
 
 if bpy.context.active_object.mode == 'EDIT':
     bpy.ops.object.mode_set(mode='OBJECT')
@@ -19,21 +27,36 @@ meshObjektu = bpy.context.active_object.data
 #pridat if edit jump to object and back to edit!!!!!!!!!!!!!
 
 
-with open("UniControl/vytycovaci body/body SD 0-32.csv", "w") as file:
+with open(filePath, "w") as file:
     for vert in meshObjektu.vertices:
         if vert.select == True and vert.hide == False:
-            #textToPrint = ''
-            #file.write(str(vert.index) + ";")
-            file.write(str(vert.index) + ",")
-            file.write(str("{:.3f}".format(round(vert.co[0]+odecetX,3)) + ","))
-            file.write(str("{:.3f}".format(round(vert.co[1]+odecetY,3)) + ","))
+            if naming == "index":
+                vertName = str(vert.index)#pridat system pojmenovani
+            file.write(vertName + delimiter)
+
+            coordX = numpy.float64(vert.co[0])
+            coordY = numpy.float64(vert.co[1])
+            coordZ = numpy.float64(vert.co[2])
+
+            diffZTmp = diffZ
+            if coordZ == 0.0:
+                diffZTmp = 0
+
+            if format == "XYZ":
+                file.write("{:.{}f}".format(round(coordX + diffX, decPlaces),decPlaces) + delimiter)
+                file.write("{:.{}f}".format(round(coordY + diffY, decPlaces),decPlaces) + delimiter)
+            if format == "YXZ":
+                file.write("{:.{}f}".format(round(coordY + diffY, decPlaces),decPlaces) + delimiter)
+                file.write("{:.{}f}".format(round(coordX + diffX, decPlaces),decPlaces) + delimiter)
+            if format == "-XYZ":
+                file.write("{:.{}f}".format(round(-coordX - diffX, decPlaces),decPlaces) + delimiter)
+                file.write("{:.{}f}".format(round(-coordY - diffY, decPlaces),decPlaces) + delimiter)
+            if format == "-YXZ":
+                file.write("{:.{}f}".format(round(-coordY - diffY, decPlaces),decPlaces) + delimiter)
+                file.write("{:.{}f}".format(round(-coordX - diffX, decPlaces),decPlaces) + delimiter)
             
             #textToPrint = str(vert.index) + "; " + str(round(vert.co[0]+715100,3)) + "; " + str(round(vert.co[1]+1152300,3)) + ";"
-            
-            if vert.co[2] == 0:
-                file.write("000.000" + "\n")
-                #textToPrint = textToPrint + "000.00"
-            else:
-                file.write(str("{:.3f}".format(round(vert.co[2]+odecetZ,3)) + "\n"))
+    
+            file.write("{:.{}f}".format(round(coordZ + diffZTmp, decPlaces),decPlaces) + "\n")
                 #textToPrint = textToPrint + str(round(vert.co[2]+470,3))
             #print(textToPrint + "\n")
