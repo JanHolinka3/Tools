@@ -1,4 +1,4 @@
-import bpy
+import bpy #type: ignore
 
 odecetZ=720.0
 

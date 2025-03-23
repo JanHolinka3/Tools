@@ -1,6 +1,6 @@
-import bpy
-import bmesh
-import numpy
+import bpy #type: ignore
+import bmesh #type: ignore
+import numpy #type: ignore
 
 diffX=782700.0
 diffY=1197500.0
