@@ -1,5 +1,6 @@
-import bpy
-import numpy #numpy.float64()
+import bpy #type: ignore
+import numpy #type: ignore 
+#numpy.float64()
 
 #coords to substract are float - change to 64 bit only on some automatic coord alignment
 diffX=782700.0
@@ -9,6 +10,7 @@ decPlaces = 3
 delimiter = ","
 filePath = "body1.csv"
 naming = "index"
+#naming = "vertgroup"
 format = "XYZ"
 #format = "YXZ"
 #format = "-XYZ"
@@ -19,6 +21,7 @@ if bpy.context.active_object.mode == 'EDIT':
     bpy.ops.object.mode_set(mode='EDIT')
 
 meshObjektu = bpy.context.active_object.data
+objekt = bpy.context.active_object
 
 #chce to jump out and in object mode, jinak to nebere aktualni zmeny
 #X = -715298.539     Y = -1152313.323
@@ -30,7 +33,16 @@ meshObjektu = bpy.context.active_object.data
 with open(filePath, "w") as file:
     for vert in meshObjektu.vertices:
         if vert.select == True and vert.hide == False:
-            if naming == "index":
+            if naming == "vertgroup":
+                for group in objekt.vertex_groups:
+                    try:
+                        weight = group.weight(vert.index)
+                        if weight > 0:
+                            vertName = "\"" + group.name + "\""
+                        break
+                    except:
+                        vertName = str(vert.index)
+            else:
                 vertName = str(vert.index)#pridat system pojmenovani
             file.write(vertName + delimiter)
 
