@@ -1,7 +1,16 @@
-import bpy
-import mathutils
-import bmesh
-import numpy
+import bpy #type: ignore
+import bmesh #type: ignore
+import numpy #type: ignore
+
+diffX=782700.0
+diffY=1197500.0
+diffZ=720.0
+decPlaces = 3
+delimiter = ","
+filePath = "body1.csv"
+#naming = "index"
+format = "XYZ"
+#format = "YXZ"
 
 #doplnit textovy popis - nazvy bodu - vlastni collection
 
@@ -10,7 +19,7 @@ arrayY = []
 arrayZ = []
 slova = []
 
-with open("UniControl/Zamereni/vo.csv", "r") as file:
+with open(filePath, "r") as file:
     lineIndex = 0
     for line in file:
         if lineIndex == 0:
@@ -20,10 +29,10 @@ with open("UniControl/Zamereni/vo.csv", "r") as file:
         slovo = ''
         posledniPismeno = False
         for char in line:
-            if char != ',':
+            if char != delimiter:
                 slovo = slovo + char
                 posledniPismeno = True
-            if char == ',' and posledniPismeno == True:
+            if char == delimiter and posledniPismeno == True:
                 posledniPismeno = False
                 slova.append(slovo)
                 slovo = ''
@@ -46,19 +55,17 @@ with open("UniControl/Zamereni/vo.csv", "r") as file:
         lineIndex = lineIndex +1
     #print(arrayZ)
     
+
 bpy.ops.mesh.primitive_plane_add()
 objectMesh = bpy.context.active_object.data
 bFA=bmesh.new() 
-odecetX=782700.0
-odecetY=1197500.0
-odecetZ=720.0
 
 indA = 0
 for xVal in arrayX:
-    #print(xVal)
-    #vector = (xVal-odecetX, arrayY[indA]-odecetY, arrayZ[indA]-odecetZ) #pro Z
-    vector = (xVal-odecetX, arrayY[indA]-odecetY, arrayZ[indA] - odecetZ) #bez Z
-    #vector = (arrayY[indA]-odecetX, xVal-odecetY, arrayZ[indA]) #bez Z prvni Y
+    if format == "XYZ":
+        vector = (xVal-diffX, arrayY[indA]-diffY, arrayZ[indA] - diffZ) 
+    if format == "YXZ":
+        vector = (arrayY[indA]-diffY, xVal-diffX, arrayZ[indA] - diffZ) 
     bFA.verts.new(vector)
     indA = indA + 1
 

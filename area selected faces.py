@@ -1,6 +1,6 @@
-import bpy
+import bpy #type: ignore
 import math
-import bmesh
+import bmesh #type: ignore
 
 #doplnit world matrix
 

@@ -1,6 +1,6 @@
-import bpy
+import bpy #type: ignore
 import math
-import mathutils
+import mathutils #type: ignore
 
 def smerovyVektor(vektorBase: list[float], vektorSmer: list[float]) -> list[float]:
     sX = vektorSmer[0] - vektorBase[0]

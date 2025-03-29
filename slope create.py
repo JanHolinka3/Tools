@@ -1,6 +1,6 @@
-import bpy
+import bpy #type: ignore
 import math
-import bmesh
+import bmesh #type: ignore
 
 #procenta = -0.03
 #procenta = 0.6667 #to je 1:1.5
