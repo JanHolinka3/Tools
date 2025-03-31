@@ -2,12 +2,12 @@ import bpy #type: ignore
 import bmesh #type: ignore
 import numpy #type: ignore
 
-diffX=782700.0
-diffY=1197500.0
-diffZ=720.0
+diffX=757500.00
+diffY=1165300.00
+diffZ=380.00
 decPlaces = 3
-delimiter = ","
-filePath = "body1.csv"
+delimiter = "  "
+filePath = "geodetickePodklady/Body_bodove_pole.txt"
 #naming = "index"
 format = "XYZ"
 #format = "YXZ"
@@ -21,39 +21,81 @@ slova = []
 
 with open(filePath, "r") as file:
     lineIndex = 0
-    for line in file:
-        if lineIndex == 0:
-            lineIndex = lineIndex + 1
-            continue
-        indexSlova = 0
-        slovo = ''
-        posledniPismeno = False
-        for char in line:
-            if char != delimiter:
-                slovo = slovo + char
-                posledniPismeno = True
-            if char == delimiter and posledniPismeno == True:
+    if delimiter == "  ":
+        for line in file:
+            #if lineIndex == 0:
+                #lineIndex = lineIndex + 1
+                #continue
+            indexSlova = 0
+            slovo = ''
+            firstSpace = True
+            waitForChar = False
+            for char in line:
+                if char != " ":
+                    slovo = slovo + char
+                    waitForChar = False
+                    firstSpace = True
+                    posledniPismeno = True
+                if char == " " and firstSpace == False and waitForChar == False:
+                    if slovo != "":
+                        slova.append(slovo)
+                        slovo = ''
+                        indexSlova = indexSlova + 1
+                        waitForChar = True
+                if char == " ":
+                    firstSpace = False
+            if posledniPismeno == True:
                 posledniPismeno = False
                 slova.append(slovo)
                 slovo = ''
                 indexSlova = indexSlova + 1
-        if posledniPismeno == True:
-            posledniPismeno = False
-            slova.append(slovo)
+                waitForChar = True
+            #mame slova najebana ve slova[]
+            #slova[1]=slova[1].replace(",", ".")
+            #slova[2]=slova[2].replace(",", ".")
+            arrayX.append(abs(numpy.float64(slova[1])))
+            arrayY.append(abs(numpy.float64(slova[2])))
+            try:
+                arrayZ.append(abs(numpy.float64(slova[3])))
+            except:
+                arrayZ.append(numpy.float64(0.0))
+            slova.clear()
+            lineIndex = lineIndex +1
+        #print(arrayZ)
+    else:
+        for line in file:
+            #if lineIndex == 0:
+                #lineIndex = lineIndex + 1
+                #continue
+            indexSlova = 0
             slovo = ''
-            indexSlova = indexSlova + 1
-        #mame slova najebana ve slova[]
-        #slova[1]=slova[1].replace(",", ".")
-        #slova[2]=slova[2].replace(",", ".")
-        arrayX.append(abs(numpy.float64(slova[1])))
-        arrayY.append(abs(numpy.float64(slova[2])))
-        try:
-            arrayZ.append(abs(numpy.float64(slova[3])))
-        except:
-            arrayZ.append(numpy.float64(0.0))
-        slova.clear()
-        lineIndex = lineIndex +1
-    #print(arrayZ)
+            posledniPismeno = False
+            for char in line:
+                if char != delimiter:
+                    slovo = slovo + char
+                    posledniPismeno = True
+                if char == delimiter and posledniPismeno == True:
+                    posledniPismeno = False
+                    slova.append(slovo)
+                    slovo = ''
+                    indexSlova = indexSlova + 1
+            if posledniPismeno == True:
+                posledniPismeno = False
+                slova.append(slovo)
+                slovo = ''
+                indexSlova = indexSlova + 1
+            #mame slova najebana ve slova[]
+            #slova[1]=slova[1].replace(",", ".")
+            #slova[2]=slova[2].replace(",", ".")
+            arrayX.append(abs(numpy.float64(slova[1])))
+            arrayY.append(abs(numpy.float64(slova[2])))
+            try:
+                arrayZ.append(abs(numpy.float64(slova[3])))
+            except:
+                arrayZ.append(numpy.float64(0.0))
+            slova.clear()
+            lineIndex = lineIndex +1
+        #print(arrayZ)
     
 
 bpy.ops.mesh.primitive_plane_add()
